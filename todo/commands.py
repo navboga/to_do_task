@@ -57,11 +57,12 @@ class NewCommand(BaseCommand):
         # )
         # return dict(classes)
 
-        from models import ToDoItem, ToBuyItem
+        from models import ToDoItem, ToBuyItem, ToReadItem
 
         return {
             'ToDoItem': ToDoItem,
             'ToBuyItem': ToBuyItem,
+            'ToReadItem': ToReadItem,
         }
 
     def perform(self, objects, *args, **kwargs):
@@ -105,3 +106,38 @@ class ExitCommand(BaseCommand):
 
     def perform(self, objects, *args, **kwargs):
         raise UserExitException('See you next time!')
+
+
+
+
+class DoneCommand(BaseCommand):
+    state = True
+    @staticmethod
+    def label():
+        return 'done'
+
+    def perform(self, objects, *args, **kwargs):
+
+        if len(objects) == 0:
+            print('There are no items in storage.')
+            return
+
+        for index, obj in enumerate(objects):
+            print('{}: {}'.format(index, str(obj)))
+
+        try:
+            index=int(input('Input object index:'))
+            objects[index].done=self.state
+        except IndexError:
+            print('wrong Index!')
+        except ValueError:
+            print('Input number')
+
+
+
+class UndoneCommand(DoneCommand):
+    state = False
+
+    @staticmethod
+    def label():
+        return 'undone'

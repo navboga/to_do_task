@@ -19,8 +19,10 @@ class Storage(object):  # storage = Storge()
 
 
 class BaseItem(object):
+
     def __init__(self, heading):
         self.heading = heading
+        self.done = False
 
     def __repr__(self):
         return self.__class__
@@ -32,7 +34,8 @@ class BaseItem(object):
 
 class ToDoItem(BaseItem):
     def __str__(self):
-        return 'ToDo: {}'.format(
+        return '{} ToDo: {}'.format(
+            '+' if self.done else '-',
             self.heading
         )
 
@@ -49,7 +52,8 @@ class ToBuyItem(BaseItem):
         self.price = price
 
     def __str__(self):
-        return 'ToBuy: {} for {}'.format(
+        return '{} ToBuy: {} for {}'.format(
+            '+' if self.done else '-',
             self.heading,
             self.price,
         )
@@ -60,3 +64,25 @@ class ToBuyItem(BaseItem):
         heading = input_function('Input heading: ')
         price = input_function('Input price: ')
         return ToBuyItem(heading, price)
+
+
+
+
+class ToReadItem(BaseItem):
+    def __init__(self, heading, url):
+        super(ToReadItem, self).__init__(heading)
+        self.url = url
+
+    def __str__(self):
+        return '{} ToRead: {} for {}'.format(
+            '+' if self.done else '-',
+            self.heading,
+            self.url,
+            )
+
+    @classmethod
+    def construct(cls):
+        input_function = get_input_function()
+        heading = input_function('Input heading: ')
+        url = input_function('Input URL: ')
+        return ToReadItem(heading, url)
